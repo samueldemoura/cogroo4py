@@ -2,7 +2,7 @@
 Uma interface para acessar o analisador morfológico e o corretor gramatical do CoGrOO em Python.
 
 # Pré-requisitos
- - interpretador Python 3.x
+ - interpretador Python 2.7
  - Pacote py4j (*pip install py4j*)
  - Java Runtime Environment 8+
 
@@ -16,7 +16,7 @@ Baixe os arquivos **cogroo_interface.py** e **setup.py** e instale o pacote com 
 Se preferir, instale a partir do GitHub pelo pip:
 
 ```
-    pip install git+https://github.com/gpassero/cogroo4py.git
+    pip install git+https://github.com/proletrus/cogroo4py.git
 ```
 
 É necessário executar o arquivo **cogroo4py.jar** para ativar o Socket que permitirá a comunicação do Python com a JVM através do py4j. Todos os componentes do CoGrOO 4 necessários já estão nesse pacote.
@@ -30,7 +30,7 @@ Após isso, em uma IDE Python de sua preferência (ex. IPython, Spyder), importe
 
 ```python
     from cogroo_interface import Cogroo
-    cogroo = Cogroo.Instance()
+    cogroo = Cogroo.instance()
 ```
 
 Agora você já pode usar os recursos do CoGrOO. Esta interface disponibiliza métodos para retornar uma análise morfológica completa de um documento, lematizar, identificar partes do discurso, dividir em chunks e verificar erros gramaticais. 

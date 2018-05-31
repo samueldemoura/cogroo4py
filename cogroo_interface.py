@@ -4,9 +4,10 @@ Created on Sat Sep  3 21:21:19 2016
 
 @author: Guilherme Passero <guilherme.passero0@gmail.com>
 """
-from py4j.java_gateway import JavaGateway
 import logging
 import re
+
+from py4j.java_gateway import JavaGateway
 
 
 LOGGER = logging.getLogger(__name__)
@@ -32,7 +33,7 @@ class Singleton:
     def __init__(self, decorated):
         self._decorated = decorated
 
-    def Instance(self):
+    def instance(self):
         """
         Returns the singleton instance. Upon its first call, it creates a
         new instance of the decorated class and calls its `__init__` method.
@@ -213,7 +214,10 @@ class Cogroo:
         try:
             doc = self.analyzer.grammarCheck(text)
         except:			
-            LOGGER.error('Couldn\'t connect with CoGrOO for grammar check. Is it running?')
+            LOGGER.error(
+                'Couldn\'t connect with CoGrOO for grammar check. '
+                'Is it running?'
+            )
             return None
 
         return Document(doc)
@@ -250,9 +254,7 @@ class Cogroo:
 
             last_paragraph = sentence.paragraph
 
-
         return ' '.join(ret)
-
 
     def pos_tag(self, text):
         if text is None or text == '':
@@ -272,7 +274,6 @@ class Cogroo:
                 ret.append(token.lexeme + '#' + token.pos)
 
         return ' '.join(ret)
-
 
     def chunk_tag(self, text, type_='normal'):
         if text is None or text == '':
@@ -395,4 +396,4 @@ class Cogroo:
         return synchunk
 
 
-cogroo = Cogroo.Instance()
+cogroo = Cogroo.instance()
