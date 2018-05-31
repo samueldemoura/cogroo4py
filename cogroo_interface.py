@@ -5,7 +5,6 @@ Created on Sat Sep  3 21:21:19 2016
 @author: Guilherme Passero <guilherme.passero0@gmail.com>
 """
 from py4j.java_gateway import JavaGateway
-from functools import lru_cache
 import logging
 import re
 
@@ -195,7 +194,6 @@ class Cogroo:
         self.chunk_tags = self._chunk_tags()
         self.synchunk_tags = self._synchunk_tags()
 
-    @lru_cache(maxsize=5000)
     def analyze(self, text):
         text = self._preproc(text)
         try:
