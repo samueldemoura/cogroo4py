@@ -83,7 +83,7 @@ class Token:
 #                print('Couldn\'t convert ' + self.lemma + ' to number.')
 
     def __repr__(self):
-        return '{0}#{1} {2}'.format(self.lexeme, self.pos, self.feat)
+        return u'{0}#{1} {2}'.format(self.lexeme, self.pos, self.feat).encode('utf8')
 
 
 class Chunk:
@@ -124,7 +124,7 @@ class Sentence:
             self.synchunks.append(Chunk(self, synchunk))
 
     def __repr__(self):
-        return self.text
+        return self.text.encode('utf8')
 
 
 class Document:
@@ -146,7 +146,6 @@ class Document:
             self.sentences.append(Sentence(sentence, paragraph))
             last_sent_end = sentence.getEnd()
 
-
         self.paragraphs = []
         for sentence in self.sentences:
             p = sentence.paragraph
@@ -160,9 +159,8 @@ class Document:
             for cogroo_mistake in cogroo_doc.getMistakes():
                 self.mistakes.append(Mistake(cogroo_mistake))
 
-
     def __repr__(self):
-        return self.text
+        return self.text.encode('utf8')
 
 
 class Mistake:
@@ -180,7 +178,7 @@ class Mistake:
         self.rule_priority = cogroo_mistake.getRulePriority()
 
     def __repr__(self):
-        return '[{0}] {1}'.format(self.rule_id, self.short_msg)
+        return u'[{0}] {1}'.format(self.rule_id, self.short_msg).encode('utf8')
 
 
 @Singleton
