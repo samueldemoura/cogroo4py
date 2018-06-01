@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from cogroo_interface import Cogroo
+from cogroo_interface import Cogroo, Document
 
 
 class LemmaTest(unittest.TestCase):
@@ -27,13 +27,18 @@ class LemmaTest(unittest.TestCase):
     def test_morpho_analysis(self):
         doc = self.cogroo.analyze('Estas laranjas estão deliciosas.')
 
-        print doc.sentences[0].tokens
-        print doc.sentences
-        print doc
+        self.assertIsNotNone(doc)
+        self.assertTrue(isinstance(doc, Document))
+        self.assertNotEqual('%s' % doc.sentences[0].tokens, '')
+        self.assertNotEqual('%s' % doc.sentences, '')
+        self.assertNotEqual('%s' % doc, '')
 
     def test_grammar_checker(self):
         doc = self.cogroo.grammar_check('Elas são bonita.')
-        print doc.mistakes
+
+        self.assertIsNotNone(doc)
+        self.assertTrue(isinstance(doc, Document))
+        self.assertNotEqual('%s' % doc.mistakes, '')
 
 
 if __name__ == '__main__':

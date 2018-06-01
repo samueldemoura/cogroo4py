@@ -67,7 +67,7 @@ class Token:
         self.lemmas = list(cogroo_token.getLemmas())
         self.lexeme = cogroo_token.getLexeme()
 
-        if len(self.lemmas) > 0:
+        if self.lemmas:
             self.lemma = self.lemmas[0]
         else:
             self.lemma = self.lexeme
@@ -96,7 +96,7 @@ class Chunk:
     def __init__(self, sentence, cogroo_chunk):
         self.tag = cogroo_chunk.getTag()
         tokens = cogroo_chunk.getTokens()
-        if len(tokens) > 0:
+        if tokens:
             self.start = tokens[0].getStart()
             self.end = tokens[-1].getEnd()
             self.tokens = []
@@ -143,8 +143,8 @@ class Document:
 
         self.sentences = []
         for sentence in cogroo_doc.getSentences():
-            if len(paragraphs_ind) > 0:
-                start, end = paragraphs_ind[0]
+            if paragraphs_ind:
+                start = paragraphs_ind[0][0]
                 if start <= last_sent_end and last_sent_end != -1:
                     del paragraphs_ind[0]
                     paragraph += 1
@@ -166,6 +166,9 @@ class Document:
                 self.mistakes.append(Mistake(cogroo_mistake))
 
     def __repr__(self):
+        return self.text.encode('utf8')
+
+    def __unicode__(self):
         return self.text.encode('utf8')
 
 
@@ -218,7 +221,7 @@ class Cogroo:
         doc = None
         try:
             doc = self.analyzer.grammarCheck(text)
-        except:			
+        except:
             LOGGER.error(
                 'Couldn\'t connect with CoGrOO for grammar check. '
                 'Is it running?'
@@ -240,7 +243,7 @@ class Cogroo:
         if text is None or text == '':
             return ''
 
-        if type(text) is not Document:
+        if not isinstance(text, Document):
             doc = self.analyze(text)
         else:
             doc = text
@@ -265,7 +268,7 @@ class Cogroo:
         if text is None or text == '':
             return ''
 
-        if type(text) is not Document:
+        if not isinstance(text, Document):
             doc = self.analyze(text)
         else:
             doc = text
@@ -284,7 +287,7 @@ class Cogroo:
         if text is None or text == '':
             return ''
 
-        if type(text) is not Document:
+        if not isinstance(text, Document):
             doc = self.analyze(text)
         else:
             doc = text
