@@ -28,7 +28,7 @@ class Singleton:
     takes only the `self` argument. Other than that, there are
     no restrictions that apply to the decorated class.
 
-    To get the singleton instance, use the `Instance` method. Trying
+    To get the singleton instance, use the `instance` method. Trying
     to use `__call__` will result in a `TypeError` being raised.
 
     Limitations: The decorated class cannot be inherited from.
