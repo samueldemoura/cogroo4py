@@ -170,9 +170,6 @@ class Document:
     def __repr__(self):
         return self.text.encode('utf8')
 
-    def __unicode__(self):
-        return self.text.encode('utf8')
-
 
 class Mistake:
 
