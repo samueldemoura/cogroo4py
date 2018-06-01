@@ -15,7 +15,7 @@ jobs:
       - run:
           name: Starting CoGroo
           command: |
-            ./cogroo start
+            ./scripts/cogroo.sh start
             sleep 30
       - run:
           name: Running tests
