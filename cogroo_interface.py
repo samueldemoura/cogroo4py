@@ -219,6 +219,14 @@ class Cogroo:
 
         return Document(doc)
 
+    def _safe_analyse(self, text):
+        if text is None or text == '':
+            return None
+
+        if not isinstance(text, Document):
+            return self.analyze(text)
+        return text
+
     def grammar_check(self, text):
         text = self._preproc(text)
         doc = None
@@ -244,19 +252,13 @@ class Cogroo:
         return text
 
     def lemmatize(self, text):
-        if text is None or text == '':
-            return ''
-
-        if not isinstance(text, Document):
-            doc = self.analyze(text)
-        else:
-            doc = text
+        doc = self._safe_analyse(text)
 
         if doc is None:
             return ''
 
-        ret = []
         last_paragraph = -1
+        ret = []
         for sentence in doc.sentences:
             if sentence.paragraph > last_paragraph and last_paragraph != -1:
                 ret.append('\n')
@@ -269,13 +271,7 @@ class Cogroo:
         return ' '.join(ret)
 
     def pos_tag(self, text):
-        if text is None or text == '':
-            return ''
-
-        if not isinstance(text, Document):
-            doc = self.analyze(text)
-        else:
-            doc = text
+        doc = self._safe_analyse(text)
 
         if doc is None:
             return ''
@@ -288,13 +284,7 @@ class Cogroo:
         return ' '.join(ret)
 
     def chunk_tag(self, text, type_='normal'):
-        if text is None or text == '':
-            return ''
-
-        if not isinstance(text, Document):
-            doc = self.analyze(text)
-        else:
-            doc = text
+        doc = self._safe_analyse(text)
 
         if doc is None:
             return ''
