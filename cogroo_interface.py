@@ -3,6 +3,11 @@
 Created on Sat Sep  3 21:21:19 2016
 
 @author: Guilherme Passero <guilherme.passero0@gmail.com>
+
+Improvements on the original code (by contemmcm):
+    * Better UTF-8 support
+    * Added unit tests
+    * Added daemon for unix to start/stop cogroo4py.jar
 """
 import logging
 import re
