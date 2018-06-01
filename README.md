@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/proletrus/cogroo4py/badge.svg?branch=master)](https://coveralls.io/github/proletrus/cogroo4py?branch=master)
+
 # CoGrOO4Py
 Uma interface para acessar o analisador morfológico e o corretor gramatical do CoGrOO em Python.
 

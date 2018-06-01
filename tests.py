@@ -9,7 +9,13 @@ class LemmaTest(unittest.TestCase):
     def setUp(self):
         self.cogroo = Cogroo.instance()
 
-    def test(self):
+    def test_singleton(self):
+        try:
+            Cogroo()
+        except TypeError:
+            self.assertTrue(True)
+
+    def test_lemma(self):
         lemma = self.cogroo.lemmatize('Estas laranjas estão deliciosas.')
 
         self.assertTrue(isinstance(lemma, unicode))
@@ -18,26 +24,14 @@ class LemmaTest(unittest.TestCase):
             'este laranja estar delicioso .'
         )
 
-
-class MorphologicalAnalysisTest(unittest.TestCase):
-
-    def setUp(self):
-        self.cogroo = Cogroo.instance()
-
-    def test(self):
+    def test_morpho_analysis(self):
         doc = self.cogroo.analyze('Estas laranjas estão deliciosas.')
 
         print doc.sentences[0].tokens
         print doc.sentences
         print doc
 
-
-class GrammarCheckerTest(unittest.TestCase):
-
-    def setUp(self):
-        self.cogroo = Cogroo.instance()
-
-    def test(self):
+    def test_grammar_checker(self):
         doc = self.cogroo.grammar_check('Elas são bonita.')
         print doc.mistakes
 
