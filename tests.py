@@ -37,6 +37,7 @@ class LemmaTest(unittest.TestCase):
         self.assertIsNotNone(doc)
         self.assertTrue(isinstance(doc, Document))
         self.assertNotEqual('%s' % doc.sentences[0].tokens, '')
+        self.assertNotEqual('%s' % doc.sentences[0].chunks, '')
         self.assertNotEqual('%s' % doc.sentences, '')
         self.assertNotEqual('%s' % doc, '')
 

@@ -110,7 +110,7 @@ class Chunk:
                     break
 
     def __repr__(self):
-        return self.tag + '[' + repr(self.tokens) + ']'
+        return '{0}[{1}]'.format(self.tag, self.tokens)
 
 
 class Sentence:
