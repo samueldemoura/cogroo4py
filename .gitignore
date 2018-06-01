@@ -1,0 +1,11 @@
+/.idea/
+/.pytest_cache/
+/cogroo4py/target/
+/cogroo4py/.settings/
+/cogroo4py/.classpath
+/cogroo4py/.project
+*.pyc
+*.log
+*.err
+.coverage
+
