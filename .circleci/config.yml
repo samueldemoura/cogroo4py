@@ -1,0 +1,24 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/python:2.7-stretch-browsers
+      - image: circleci/openjdk:8-jdk-node-browsers
+    steps:
+      - checkout
+      - run:
+          name: Resolving dependencies
+          command: |
+            sudo pip install --upgrade pip
+            sudo pip install -r requirements.txt
+      - run:
+          name: Starting CoGroo
+          command: |
+            ./cogroo start
+            sleep 30
+      - run:
+          name: Running tests
+          command: |
+            coverage run --source=cogroo_interface tests.py
+            coveralls

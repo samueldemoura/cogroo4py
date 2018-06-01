@@ -1,5 +1,4 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/proletrus/cogroo4py/badge)](https://www.codefactor.io/repository/github/proletrus/cogroo4py)
-
 [![Coverage Status](https://coveralls.io/repos/github/proletrus/cogroo4py/badge.svg?branch=master)](https://coveralls.io/github/proletrus/cogroo4py?branch=master)
 
 
