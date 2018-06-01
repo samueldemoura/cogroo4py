@@ -10,10 +10,13 @@ class LemmaTest(unittest.TestCase):
         self.cogroo = Cogroo.instance()
 
     def test_singleton(self):
+        excpt_thrown = False
         try:
             Cogroo()
-        except TypeError:
-            self.assertTrue(True)
+        except TypeError, e:
+            excpt_thrown = True
+            self.assertEquals(Cogroo.MSG_CALL_INSTANCE, '%s' % e)
+        self.assertTrue(excpt_thrown)
 
     def test_lemma(self):
         lemma = self.cogroo.lemmatize('Estas laranjas estão deliciosas.')

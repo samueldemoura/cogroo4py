@@ -35,6 +35,8 @@ class Singleton:
 
     """
 
+    MSG_CALL_INSTANCE = 'Singletons must be accessed through `instance()`.'
+
     def __init__(self, decorated):
         self._decorated = decorated
 
@@ -52,7 +54,7 @@ class Singleton:
             return self._instance
 
     def __call__(self):
-        raise TypeError('Singletons must be accessed through `instance()`.')
+        raise TypeError(self.MSG_CALL_INSTANCE)
 
     def __instancecheck__(self, inst):
         return isinstance(inst, self._decorated)
@@ -205,12 +207,13 @@ class Cogroo:
         text = self._preproc(text)
         try:
             doc = self.analyzer.analyze(text)
-        except:
+        # pylint: disable = broad-except
+        except Exception:
             try:
                 #TODO check this workaround for better solution
                 text = re.sub(', e a', ', E a', text)
                 doc = self.analyzer.analyze(text)
-            except:
+            except Exception:
                 LOGGER.error('Couldn\'t connect with CoGrOO. Is it running?')
                 return None
 
@@ -221,7 +224,8 @@ class Cogroo:
         doc = None
         try:
             doc = self.analyzer.grammarCheck(text)
-        except:
+        # pylint: disable = broad-except
+        except Exception:
             LOGGER.error(
                 'Couldn\'t connect with CoGrOO for grammar check. '
                 'Is it running?'
