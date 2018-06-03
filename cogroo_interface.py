@@ -201,7 +201,6 @@ class Cogroo:
         self.synchunk_tags = self._synchunk_tags()
 
     def analyze(self, text):
-        text = self._preproc(text)
         try:
             doc = self.analyzer.analyze(text)
         # pylint: disable = broad-except
@@ -225,10 +224,8 @@ class Cogroo:
         return text
 
     def grammar_check(self, text):
-        text = self._preproc(text)
-        doc = None
         try:
-            doc = self.analyzer.grammarCheck(text)
+            return Document(self.analyzer.grammarCheck(text))
         # pylint: disable = broad-except
         except Exception:
             LOGGER.error(
@@ -236,17 +233,6 @@ class Cogroo:
                 'Is it running?'
             )
             return None
-
-        return Document(doc)
-
-    def _preproc(self, text):
-        # Trim sentences
-        text = re.sub('[ ]+\n', '', text)
-        # Add missing final dots
-        text = re.sub(r'([^.?!])\n', r'\1.\n', text)
-        # Add missing spaces
-        text = re.sub(r'([?!.,:;])(\S)', r'\1 \2', text)
-        return text
 
     def lemmatize(self, text):
         doc = self._safe_analyse(text)
