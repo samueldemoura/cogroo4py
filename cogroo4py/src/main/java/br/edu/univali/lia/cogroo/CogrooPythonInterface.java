@@ -45,7 +45,7 @@ public class CogrooPythonInterface {
 		return doc;
 	}
 	
-	public Document grammarCheck(String text) {
+	public CheckDocument grammarCheck(String text) {
 		System.out.println("Text received for analysis: " + text);
 		CheckDocument doc = new CheckDocument(text);
 		gc.analyze(doc);
