@@ -5,7 +5,7 @@
 	<groupId>br.edu.univali.lia.cogroo</groupId>
 	<artifactId>cogroo4py</artifactId>
   <name>cogroo4py</name>
-  <version>4.3.2-SNAPSHOT</version>
+  <version>4.2.0</version>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
