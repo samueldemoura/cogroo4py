@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from cogroo_interface import Cogroo, Document
+from cogroo4py import Cogroo, Document
 
 
 class LemmaTest(unittest.TestCase):
@@ -13,21 +13,21 @@ class LemmaTest(unittest.TestCase):
         excpt_thrown = False
         try:
             Cogroo()
-        except TypeError, e:
+        except TypeError as e:
             excpt_thrown = True
-            self.assertEquals(Cogroo.MSG_CALL_INSTANCE, '%s' % e)
+            self.assertEqual(Cogroo.MSG_CALL_INSTANCE, '%s' % e)
         self.assertTrue(excpt_thrown)
 
     def test_lemma(self):
         lemma = self.cogroo.lemmatize('Estas laranjas estão deliciosas.')
 
-        self.assertTrue(isinstance(lemma, unicode))
-        self.assertEquals(
+        self.assertTrue(isinstance(lemma, str))
+        self.assertEqual(
             lemma,
             'este laranja estar delicioso .'
         )
 
-        self.assertEquals(self.cogroo.lemmatize(''), '')
+        self.assertEqual(self.cogroo.lemmatize(''), '')
 
     def test_morpho_analysis(self):
         doc = self.cogroo.analyze(
@@ -47,7 +47,7 @@ class LemmaTest(unittest.TestCase):
         )
 
         self.assertIsNotNone(doc)
-        self.assertNotEquals(doc.mistakes, [])
+        self.assertNotEqual(doc.mistakes, [])
         self.assertTrue(isinstance(doc, Document))
         self.assertNotEqual('%s' % doc.mistakes, '')
 
@@ -57,7 +57,7 @@ class LemmaTest(unittest.TestCase):
             'porque eles serão chamados filhos de Deus.'
         )
 
-        self.assertEquals(
+        self.assertEqual(
             pos_tag,
             u'Bem#prop -#- aventurados#v-pcp os#art pacificadores#n ,#, '
             u'porque#conj-s eles#pron-pers serão#v-fin chamados#v-pcp filhos#n '
@@ -70,7 +70,7 @@ class LemmaTest(unittest.TestCase):
             'porque eles alcançarão misericórdia.',
             'normal'
         )
-        self.assertTrue(isinstance(chunk_tag_normal, unicode))
+        self.assertTrue(isinstance(chunk_tag_normal, str))
         self.assertNotEqual(chunk_tag_normal, u'')
 
         chunk_tag_sync = self.cogroo.chunk_tag(
@@ -78,7 +78,7 @@ class LemmaTest(unittest.TestCase):
             'porque eles alcançarão misericórdia.',
             'sync'
         )
-        self.assertTrue(isinstance(chunk_tag_sync, unicode))
+        self.assertTrue(isinstance(chunk_tag_sync, str))
         self.assertNotEqual(chunk_tag_sync, u'')
 
 
