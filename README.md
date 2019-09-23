@@ -1,44 +1,32 @@
-[![CircleCI](https://circleci.com/gh/proletrus/cogroo4py.svg?style=svg)](https://circleci.com/gh/proletrus/cogroo4py)
-[![CodeFactor](https://www.codefactor.io/repository/github/proletrus/cogroo4py/badge)](https://www.codefactor.io/repository/github/proletrus/cogroo4py)
-[![Coverage Status](https://coveralls.io/repos/github/proletrus/cogroo4py/badge.svg?branch=master)](https://coveralls.io/github/proletrus/cogroo4py?branch=master)
-
-
 # CoGrOO4Py
 Uma interface para acessar o analisador morfológico e o corretor gramatical do CoGrOO em Python.
 
 # Pré-requisitos
- - interpretador Python 2.7
- - Pacote py4j (*pip install py4j*)
- - Java Runtime Environment 8+
+ - Python 3
+ - Cython (`pip install Cython`)
+ - JRE/JDK 8
 
 # Como usar
-Baixe os arquivos **cogroo_interface.py** e **setup.py** e instale o pacote com o comando:
+Baixe os arquivos **cogroo4py.py**, **cogroo4py.jar** e **setup.py** e instale o pacote com o comando:
 
 ```
-python setup.py install
+pip install .
 ```
 
 Se preferir, instale a partir do GitHub pelo pip:
 
 ```
-pip install git+https://github.com/proletrus/cogroo4py.git
+pip install git+https://github.com/samueldemoura/cogroo4py.git
 ```
 
-É necessário executar o arquivo **cogroo4py.jar** para ativar o Socket que permitirá a comunicação do Python com a JVM através do py4j. Todos os componentes do CoGrOO 4 necessários já estão nesse pacote.
-
-```
-java -jar cogroo4py.jar
-Gateway Server Started
-```
-
-Após isso, em uma IDE Python de sua preferência (ex. IPython, Spyder), importe e instancie a classe *Cogroo*.
+Após isso, em uma IDE Python de sua preferência (ex. IPython, Spyder), importe e instancie a classe `Cogroo`.
 
 ```python
 from cogroo_interface import Cogroo
 cogroo = Cogroo.instance()
 ```
 
-Agora você já pode usar os recursos do CoGrOO. Esta interface disponibiliza métodos para retornar uma análise morfológica completa de um documento, lematizar, identificar partes do discurso, dividir em chunks e verificar erros gramaticais. 
+Agora você já pode usar os recursos do CoGrOO. Esta interface disponibiliza métodos para retornar uma análise morfológica completa de um documento, lematizar, identificar partes do discurso, dividir em chunks e verificar erros gramaticais.
 
 ## Lematizando
 A lematização consiste em obter o lema das palavras de um texto. O lema é uma versão da palavra que representa todas as suas flexões. Os verbos são alterados para o infinitivo e substantivos e adjetivos são flexionados para o masculino do singular.
@@ -86,7 +74,7 @@ def _pos_tags(self):
     pos.update({"adv": "advérbio"})
     pos.update({"xxx": "outro"})
     return pos
-	
+
 # pos: "part of speech"
 pos = cogroo.pos_tags
 pos['n']
@@ -104,7 +92,7 @@ doc.sentences[0].tokens
 #   deliciosas#adj F=P,
 #   .#. -]
  ```
- 
+
 ## Corretor gramatical
 O corretor gramatical do CoGrOO verifica a colocação pronominal, concordância nominal, concordância entre sujeito e verbo, concordância verbal, uso de crase, regência nominal, regência verbal e outros erros comuns da língua portuguesa escrita. Mais detalhes sobre as regras aplicadas podem ser encontrados em http://comunidade.cogroo.org/rules.
 
@@ -114,7 +102,7 @@ doc.mistakes
 # [[xml:124] O adjetivo na função de predicativo concorda com o sujeito.]
 ```
 
-# Sobre o CoGrOO 
+# Sobre o CoGrOO
 Código fonte e informações sobre o projeto:
 https://github.com/cogroo/cogroo4
 
