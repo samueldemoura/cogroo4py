@@ -1,19 +1,26 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Sep  3 21:21:19 2016
+Based on letrustech's fork of gpassero's original cogroo4py.
 
-@author: Guilherme Passero <guilherme.passero0@gmail.com>
-
-Improvements on the original code (by contemmcm):
+Improvements over gpassero's version (by contemmcm):
     * Better UTF-8 support
     * Added unit tests
-    * Added daemon for unix to start/stop cogroo4py.jar
+
+Improvements over letrustech's version (by samueldemoura):
+    * Migrate to Python 3
+    * Replace py4j with pyjnius to solve intermittent timeout issue
 """
 import logging
+import os
 import re
 
-from py4j.java_gateway import JavaGateway
-
+os.environ['CLASSPATH'] = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), 'cogroo4py.jar'
+)
+if not 'JAVA_HOME' in os.environ:
+    # TODO: replace this with a call to `readlink -f javac` and get path from there
+    os.environ['JAVA_HOME'] = '/usr/lib/jvm/java-8-openjdk-amd64/'
+from jnius import autoclass
 
 LOGGER = logging.getLogger(__name__)
 
@@ -91,7 +98,7 @@ class Token:
 #                print('Couldn\'t convert ' + self.lemma + ' to number.')
 
     def __repr__(self):
-        return u'{0}#{1} {2}'.format(self.lexeme, self.pos, self.feat).encode('utf8')
+        return '{0}#{1} {2}'.format(self.lexeme, self.pos, self.feat) # .encode('utf8')
 
 
 class Chunk:
@@ -99,8 +106,8 @@ class Chunk:
         self.tag = cogroo_chunk.getTag()
         tokens = cogroo_chunk.getTokens()
         if tokens:
-            self.start = tokens[0].getStart()
-            self.end = tokens[-1].getEnd()
+            self.start = tokens.get(0).getStart()
+            self.end = tokens.get(tokens.size() - 1).getEnd()
             self.tokens = []
             for token in sentence.tokens:
                 if token.start >= self.start and token.end <= self.end:
@@ -119,20 +126,27 @@ class Sentence:
         self.start = cogroo_sentence.getStart()
         self.end = cogroo_sentence.getEnd()
         self.paragraph = paragraph
+
         self.tokens = []
-        for token in cogroo_sentence.getTokens():
+        token_it = cogroo_sentence.getTokens().iterator()
+        while token_it.hasNext():
+            token = token_it.next()
             self.tokens.append(Token(token))
 
         self.chunks = []
-        for chunk in cogroo_sentence.getChunks():
+        chunk_it = cogroo_sentence.getChunks().iterator()
+        while chunk_it.hasNext():
+            chunk = chunk_it.next()
             self.chunks.append(Chunk(self, chunk))
 
         self.synchunks = []
-        for synchunk in cogroo_sentence.getSyntacticChunks():
+        synchunk_it = cogroo_sentence.getSyntacticChunks().iterator()
+        while synchunk_it.hasNext():
+            synchunk = synchunk_it.next()
             self.synchunks.append(Chunk(self, synchunk))
 
     def __repr__(self):
-        return self.text.encode('utf8')
+        return self.text # .encode('utf8')
 
 
 class Document:
@@ -144,7 +158,9 @@ class Document:
         last_sent_end = -1
 
         self.sentences = []
-        for sentence in cogroo_doc.getSentences():
+        sentence_it = cogroo_doc.getSentences().iterator()
+        while sentence_it.hasNext():
+            sentence = sentence_it.next()
             if paragraphs_ind:
                 start = paragraphs_ind[0][0]
                 if start <= last_sent_end and last_sent_end != -1:
@@ -162,13 +178,22 @@ class Document:
 
             self.paragraphs[-1].append(sentence)
 
-        if cogroo_doc.getClass().getSimpleName() == 'CheckDocument':
+        # TODO: fix this. can't use getClass with pyjnius' autoclass
+        if True: #cogroo_doc.getClass().getSimpleName() == 'CheckDocument':
             self.mistakes = []
-            for cogroo_mistake in cogroo_doc.getMistakes():
-                self.mistakes.append(Mistake(cogroo_mistake))
+
+            try:
+                mistake_it = cogroo_doc.getMistakes().iterator()
+                while mistake_it.hasNext():
+                    cogroo_mistake = mistake_it.next()
+                    self.mistakes.append(Mistake(cogroo_mistake))
+            except AttributeError:
+                # couldn't call getMistakes(), which means this isn't an
+                # instance of CheckDocument. ignore.
+                pass
 
     def __repr__(self):
-        return self.text.encode('utf8')
+        return self.text # .encode('utf8')
 
 
 class Mistake:
@@ -186,15 +211,15 @@ class Mistake:
         self.rule_priority = cogroo_mistake.getRulePriority()
 
     def __repr__(self):
-        return u'[{0}] {1}'.format(self.rule_id, self.short_msg).encode('utf8')
+        return '[{0}] {1}'.format(self.rule_id, self.short_msg) # .encode('utf8')
 
 
 @Singleton
 class Cogroo:
 
     def __init__(self):
-        self.gateway = JavaGateway()
-        self.analyzer = self.gateway.entry_point
+        self.javacls = autoclass('br.edu.univali.lia.cogroo.CogrooPythonInterface')
+        self.analyzer = self.javacls()
         self.pos_tags = self._pos_tags()
         self.feat_tags = self._feat_tags()
         self.chunk_tags = self._chunk_tags()
@@ -205,13 +230,9 @@ class Cogroo:
             doc = self.analyzer.analyze(text)
         # pylint: disable = broad-except
         except Exception:
-            try:
-                #TODO check this workaround for better solution
-                text = re.sub(', e a', ', E a', text)
-                doc = self.analyzer.analyze(text)
-            except Exception:
-                LOGGER.error('Couldn\'t connect with CoGrOO. Is it running?')
-                return None
+            # TODO: check this workaround for better solution
+            text = re.sub(', e a', ', E a', text)
+            doc = self.analyzer.analyze(text)
 
         return Document(doc)
 
@@ -224,15 +245,7 @@ class Cogroo:
         return text
 
     def grammar_check(self, text):
-        try:
-            return Document(self.analyzer.grammarCheck(text))
-        # pylint: disable = broad-except
-        except Exception:
-            LOGGER.error(
-                'Couldn\'t connect with CoGrOO for grammar check. '
-                'Is it running?'
-            )
-            return None
+        return Document(self.analyzer.grammarCheck(text))
 
     def lemmatize(self, text):
         doc = self._safe_analyse(text)
